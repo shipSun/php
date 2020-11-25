@@ -1,8 +1,9 @@
 FROM centos:7
+WORKDIR /root
 RUN yum -y install wget libxml2-devel openssl-devel bzip2-devel curl-devel libjpeg-devel libpng-devel libXpm-devel freetype-devel gmp-devel libmcrypt-devel mysql-devel aspell-devel recode-devel icu libicu-devel gcc gcc-c++ make automake autoconf libtool freetype \
 && yum clean all \
-&& wget -P /root/ https://www.php.net/distributions/php-7.2.18.tar.gz \
-&& cd /root && tar zxvf php-7.2.18.tar.gz && rm -rf php-7.2.18.tar.gz \
+&& wget https://www.php.net/distributions/php-7.2.18.tar.gz \
+&& tar zxvf php-7.2.18.tar.gz && rm -rf php-7.2.18.tar.gz \
 && groupadd www && useradd -M -g www -s /bin/nologin www \
 && cd php-7.2.18/ \
 && ./configure \
@@ -51,4 +52,8 @@ RUN yum -y install wget libxml2-devel openssl-devel bzip2-devel curl-devel libjp
 --with-fpm-group=www \
 --without-gdbm \
 && make && make install \
-&& ln -s /usr/local/php7/bin/php /usr/local/sbin/php
+&& ln -s /usr/local/php7/bin/php /usr/local/sbin/php \
+&& cp php.ini-production /usr/local/php7/php.ini \
+&& cd /usr/local/php7/etc/ && cp php-fpm.conf.default php-fpm.conf \
+&& cd php-fpm.d && cp www.conf.default www.conf \
+&& rm -rf /root/php-7.2.18 && history -c
