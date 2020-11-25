@@ -1,6 +1,7 @@
 FROM centos:7
 RUN yum -y install wget libxml2-devel openssl-devel bzip2-devel curl-devel libjpeg-devel libpng-devel libXpm-devel freetype-devel gmp-devel libmcrypt-devel mysql-devel aspell-devel recode-devel icu libicu-devel gcc gcc-c++ automake autoconf libtool freetype
-RUN wget -P /root/ https://www.php.net/distributions/php-7.2.18.tar.gz && yum clean all && cd /root && tar zxvf php-7.2.18.tar.gz && rm -rf php-7.2.18.tar.gz && groupadd www && useradd -M -g www -s /bin/nologin www && ./configure \
+RUN wget -P /root/ https://www.php.net/distributions/php-7.2.18.tar.gz && yum clean all && cd /root && tar zxvf php-7.2.18.tar.gz && rm -rf php-7.2.18.tar.gz && groupadd www && useradd -M -g www -s /bin/nologin www 
+RUN cd php-7.2.18/ && ./configure \
 --prefix=/usr/local/php7 \
 --exec-prefix=/usr/local/php7 \
 --bindir=/usr/local/php7/bin \
@@ -44,4 +45,6 @@ RUN wget -P /root/ https://www.php.net/distributions/php-7.2.18.tar.gz && yum cl
 --enable-fpm \
 --with-fpm-user=www \
 --with-fpm-group=www \
---without-gdbm && make && make install
+--without-gdbm 
+RUN make && make install
+RUN ln -s /usr/local/php7/bin/php /usr/local/sbin/php
